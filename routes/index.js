@@ -26,9 +26,17 @@ router.get('/', function(req, res, next) {
   });
 });
 
-router.post("/sendpost", function (req, res, next) {
+router.post("/login", function (req, res, next) {
     var username = req.param("username");
     var password = req.param("password");
+    pool.getConnection(function (err, connection) {
+        connection.query("", function (err, rows) {
+            connection.release();
+        });
+    });
+});
+
+router.post("/sendpost", function (req, res, next) {
     var post = req.param("post");
     pool.getConnection(function (err, connection) {
         connection.query("", function (err, rows) {
