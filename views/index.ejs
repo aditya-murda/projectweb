@@ -424,13 +424,13 @@
                                 <div class="loginreg">
                                     <input type="text"  placeholder="username" name="user" ><br>
                                     <input type="password" placeholder="password" name="password"><br>
-                                    <input ng-show="loglayer" type="button" value="Login" style="margin-bottom: 2px" >
-                                    <input ng-show="!loglayer" type="button" value="Signup" style="margin-bottom: 2px"><br>
+                                    <input ng-show="loglayer" type="button" value="Login" style="margin-bottom: 2px" ng-click="login()">
+                                    <input ng-show="!loglayer" type="button" value="Register" style="margin-bottom: 2px" ng-click="register()"><br>
                                     <l ng-show="loglayer" style="padding-left: 5px">Don't have an account yet?</l>
-                                    <button ng-click="loglayer = !loglayer" ng-init="count=0" ng-show="loglayer">
+                                    <button style="background-color: #FFFFFF;border: 0px;color: #0a588d" ng-click="loglayer = !loglayer" ng-init="count=0" ng-show="loglayer">
                                         Register
                                     </button>
-                                    <button ng-click="loglayer = !loglayer" ng-init="count=0" ng-show="!loglayer">
+                                    <button ng-click="loglayer = !loglayer" ng-init="count=0" ng-show="!loglayer" style="background-color: #FFFFFF;border: 0px;color: #0a588d;padding-left: 110px">
                                         Login
                                     </button>
 

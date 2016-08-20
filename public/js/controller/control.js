@@ -17,6 +17,48 @@ module.controller('myController',['$scope','$http','LoginChecker',function ($sco
 
         $scope.loglayer=true;
 
+      /*  $http({
+            //POST ga bisa dimunculin di dalam client view
+            method: 'POST',
+            url: 'http://localhost:3000/login'
+        })
+            .success(function(data,status,headers,config){
+                console.log("success");
+                if(data){
+                    members=data;
+                }
+                else{
+                }
+            })
+            .error(function(data,status,headers,config){
+                console.log(status);
+            })*/
+
+        $scope.login = function (){
+            console.log("masuk fungsi login");
+/*
+            if(LoginChecker.checkUser($scope.username,$scope.password,members)){
+                alert("Login Successful");
+                $scope.isLoggin = true;
+                $scope.myLink={'height':'140px'};
+                console.log(isLoggin);
+            }else{
+                alert("Wrong username of password");
+            }*/
+        }
+    $scope.register = function (){
+        console.log("masuk fungsi register");
+        /*
+         if(LoginChecker.checkUser($scope.username,$scope.password,members)){
+         alert("Login Successful");
+         $scope.isLoggin = true;
+         $scope.myLink={'height':'140px'};
+         console.log(isLoggin);
+         }else{
+         alert("Wrong username of password");
+         }*/
+    }
+
 
     }]
 );
