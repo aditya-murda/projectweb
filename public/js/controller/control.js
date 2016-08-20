@@ -11,53 +11,53 @@ var isLoggin=false;
 
 module.controller('myController',['$scope','$http','LoginChecker',function ($scope,$http, LoginChecker){
         $scope.user={};
-        $scope.user.username='';
+        $scope.user.uname='';
+        $scope.pass='';
         $scope.table = [];
         $scope.myLink= {'height':'30px'};
 
         $scope.loglayer=true;
 
-      /*  $http({
-            //POST ga bisa dimunculin di dalam client view
-            method: 'POST',
-            url: 'http://localhost:3000/login'
-        })
-            .success(function(data,status,headers,config){
-                console.log("success");
-                if(data){
-                    members=data;
-                }
-                else{
-                }
-            })
-            .error(function(data,status,headers,config){
-                console.log(status);
-            })*/
-
         $scope.login = function (){
             console.log("masuk fungsi login");
-/*
-            if(LoginChecker.checkUser($scope.username,$scope.password,members)){
-                alert("Login Successful");
-                $scope.isLoggin = true;
-                $scope.myLink={'height':'140px'};
-                console.log(isLoggin);
-            }else{
-                alert("Wrong username of password");
-            }*/
+            /*LOGIN AJAX*/
+            $http({
+                method: 'POST',
+                url: 'http://localhost:3000/login',
+                data:{ uname:$scope.uname, pass:$scope.pass }
+            })
+                .success(function(data,status,headers,config){
+                    console.log("success");
+                    if(data && data.status=='1'){
+                        console.log("login very success");
+                    }
+                    else{
+                    }
+                })
+                .error(function(data,status,headers,config){
+                    console.log(status);
+                })
         }
-    $scope.register = function (){
-        console.log("masuk fungsi register");
-        /*
-         if(LoginChecker.checkUser($scope.username,$scope.password,members)){
-         alert("Login Successful");
-         $scope.isLoggin = true;
-         $scope.myLink={'height':'140px'};
-         console.log(isLoggin);
-         }else{
-         alert("Wrong username of password");
-         }*/
-    }
+        $scope.register = function (){
+            console.log("masuk fungsi register");
+            /*REGISTER AJAX*/
+            $http({
+                method: 'POST',
+                url: 'http://localhost:3000/register',
+                data:{ uname:$scope.uname, pass:$scope.pass }
+            })
+                .success(function(data,status,headers,config){
+                    console.log("success");
+                    if(data && data.status=='1'){
+                        console.log("login very success");
+                    }
+                    else{
+                    }
+                })
+                .error(function(data,status,headers,config){
+                    console.log(status);
+                })
+        }
 
 
     }]
@@ -78,4 +78,3 @@ module.service('LoginChecker',function(){
         return check;
     }
 })
-
