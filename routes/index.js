@@ -26,12 +26,37 @@ router.get('/', function(req, res, next) {
   });
 });
 
-router.get("/post", function (req, res, next) {
+router.post("/sendpost", function (req, res, next) {
     var username = req.param("username");
     var password = req.param("password");
-    var post = req.param("post")
+    var post = req.param("post");
     pool.getConnection(function (err, connection) {
-        connection.query("");
+        connection.query("", function (err, rows) {
+            connection.release();
+        });
+    });
+});
+
+router.get("/getposts", function (req, res, next) {
+    res.send("posts");
+    pool.getConnection(function (err, connection) {
+        connection.query("SELECT post FROM posts", function (err, rows) {
+            if(err) console.error("err db: ", err);
+            res.send(rows);
+            connection.release();
+        });
+    });
+});
+
+router.get("/getnearbyposts", function (req, res, next) {
+    res.send("nearbypost");
+    var location = req.param("location");
+    pool.getConnection(function (err, connection) {
+        connection.query("SELECT post FROM posts where location=" + location, function (error, rows) {
+            if(err) console.error("err db: ", err);
+            res.send(rows);
+            connection.release();
+        });
     });
 });
 
