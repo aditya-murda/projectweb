@@ -8,7 +8,13 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
+var cookieParser = require("cookie-parser");
+var cookieSession = require("cookie-session");
+
 var app = express();
+
+app.use(cookieParser());
+app.use(cookieSession({secret: 'MYKEY'}));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -31,7 +37,6 @@ var allowCORS = function (req, res, next) {
 
 app.use(allowCORS);
 app.use('/', routes);
-app.use('/users', users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
