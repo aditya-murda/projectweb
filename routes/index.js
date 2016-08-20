@@ -8,24 +8,17 @@ var pool = mysql.createPool({
     password: 'root',
     database: 'test'
 });
-var session = require("session");
+// var session = require("session");
 
 
 /* GET home page. */
-// router.get('/', function(req, res, next) {
-//   pool.getConnection(function (err, connection) {
-//       if(connection) {
-//           console.log("connection");
-//       }
-//       // TODO: debug
-//       connection.query("SELECT * FROM users", function (err, rows) {
-//           if(err) console.error("err db: ", err);
-//           console.log("rows: " + JSON.stringify(rows));
-//           res.render('index', {title: 'View Table', rows: rows});
-//           connection.release();
-//       });
-//   });
-// });
+router.get('/', function(req, res, next) {
+  res.render('index',{title: "sesuatu"});
+});
+
+router.get('/home',function(req,res,next){
+    res.render('home',{title: "sample homepage"});
+})
 
 router.all("/login", function (req, res, next) {
     var username = req.param("uname");
@@ -38,10 +31,10 @@ router.all("/login", function (req, res, next) {
                     + password + "';", function (err, rows) {
             console.log(JSON.stringify(rows));
             if(rows.length==1) {
-                res.send("{'status': '1'}");
+                res.json({status: true});
             }
             else {
-                res.send("{'status':'0'}");
+                res.json({status:false});
             }
         });
     });
@@ -52,7 +45,6 @@ router.post("/logout", function (req, res, next) {
     var password = req.param("password");
     // TODO: session logout
     // session.destroy();
-    });
 });
 
 router.all("/changepass", function (req, res, next) {
@@ -64,8 +56,9 @@ router.all("/changepass", function (req, res, next) {
                 + username + "';", function (error, rows) {
             if(err) {
                 console.error("err db: ", err);
+                res.json({status:0});
             }
-            res.send("{'status' : '1'}")
+            res.json({status:1});
             connection.release();
         });
     });
@@ -74,13 +67,18 @@ router.all("/changepass", function (req, res, next) {
 router.all("/register", function (req, res, next) {
     var username = req.param("uname");
     var password = req.param("pass");
+    var query = "INSERT INTO users (username, password) VALUES ('" + username
+        + "', '" + password +"');";
+    console.log(query);
     pool.getConnection(function (err, connection) {
-        connection.query("INSERT INTO username VALUES ('" + username
-            + "'), ('" + password +"');",
+        connection.query(query,
             function (error, rows) {
-                if(err) console.error("err db: ", err);
-                res.send(rows);
+                if(err) {
+                    res.json({status:0});
+                    console.error("err db: ", err);
+                }
                 connection.release();
+                res.json({status:1});
             });
     });
 });
@@ -91,15 +89,14 @@ router.all("/sendpost", function (req, res, next) {
     var location = req.param("location");
     // TODO: send user post
     pool.getConnection(function (err, connection) {
-        connection.query("INSERT INTO posts VALUES ('"
-                + iduser + "'), ('" + post + "');"
-                , function (err, rows) {
+        connection.query("INSERT INTO posts ( VALUES ('"
+                + iduser + "', '" + post + "');", function (err, rows) {
             if(err) {
                 console.error("err db: ", err);
-                res.send("{'status': '0'}")
+                res.json({status:0});
             }
             connection.release();
-            res.send("{'status':'1'}")
+            res.json({status:1})
             });
     });
 });
@@ -108,7 +105,7 @@ router.get("/getposts", function (req, res, next) {
     pool.getConnection(function (err, connection) {
         connection.query("SELECT post FROM posts", function (err, rows) {
             if(err) console.error("err db: ", err);
-            res.send(rows);
+            res.json(rows);
             connection.release();
         });
     });
@@ -120,7 +117,7 @@ router.get("/getnearbyposts", function (req, res, next) {
         connection.query("SELECT post FROM posts where location='"
                 + location + "';" , function (error, rows) {
             if(err) console.error("err db: ", err);
-            res.send(rows);
+            res.json(rows);
             connection.release();
         });
     });
