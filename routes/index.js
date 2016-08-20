@@ -27,15 +27,20 @@ router.get('/', function(req, res, next) {
   res.render('index', {title: 'Undercover'});
 });
 
+router.get('/home', function(req,res,next){
+  res.render('home',{title: 'view'});
+});
+
 router.post("/login", function (req, res, next) {
   var username = req.param("uname");
   var password = req.param("pass");
 
 });
 
-router.post("/register", function (req, res, next) {
+router.post('/register', function (req, res, next) {
   var username = req.param("uname");
   var password = req.param("pass");
+
 
 });
 

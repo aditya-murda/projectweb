@@ -9,7 +9,7 @@ var isLoggin=false;
 
 
 
-module.controller('myController',['$scope','$http','LoginChecker',function ($scope,$http, LoginChecker){
+module.controller('myController',['$scope','$http','$window',function ($scope,$http,$window){
         $scope.user={};
         $scope.user.uname='';
         $scope.pass='';
@@ -19,7 +19,10 @@ module.controller('myController',['$scope','$http','LoginChecker',function ($sco
         $scope.loglayer=true;
 
         $scope.login = function (){
+
             console.log("masuk fungsi login");
+
+
             /*LOGIN AJAX*/
             $http({
                 method: 'POST',
@@ -28,10 +31,13 @@ module.controller('myController',['$scope','$http','LoginChecker',function ($sco
             })
                 .success(function(data,status,headers,config){
                     console.log("success");
-                    if(data && data.status=='1'){
+                    if(data && data.status){
                         console.log("login very success");
+                        //pindah ke login
+                        window.location='home';
                     }
                     else{
+                        alert('Wrong username or password');
                     }
                 })
                 .error(function(data,status,headers,config){
@@ -39,6 +45,7 @@ module.controller('myController',['$scope','$http','LoginChecker',function ($sco
                 })
         }
         $scope.register = function (){
+
             console.log("masuk fungsi register");
             /*REGISTER AJAX*/
             $http({
@@ -48,33 +55,20 @@ module.controller('myController',['$scope','$http','LoginChecker',function ($sco
             })
                 .success(function(data,status,headers,config){
                     console.log("success");
-                    if(data && data.status=='1'){
-                        console.log("login very success");
+
+                    if(data.status){
+                        console.log("register very success");
+                        //pindah ke register
+                        window.location='home';
                     }
                     else{
+                        alert('registration failed!');
                     }
                 })
                 .error(function(data,status,headers,config){
                     console.log(status);
                 })
         }
-
-
     }]
 );
-module.service('LoginChecker',function(){
 
-    this.checkUser = function (username,password,member){
-        /*console.log("members: " + member[0].password);*/
-        var check=false;
-
-        for (var i=0;i<member.length;i++){
-            if(username==member[i].id && password==member[i].password){
-                check= true;
-            }
-            console.log("Username " + i + " = " + member[i].id);
-            console.log("username input= " + username);
-        }
-        return check;
-    }
-})

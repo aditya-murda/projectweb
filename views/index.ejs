@@ -20,6 +20,7 @@
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="css/setting.css">
 
+
     <!--***-->
     <link rel="stylesheet" href="css/bootstrap.css">
     
@@ -36,6 +37,7 @@
     </script>
 
     <script src="js/controller/control.js"></script>
+
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
@@ -63,6 +65,7 @@
                     <!-- Brand and toggle get grouped for better mobile display -->
                     <div class="navbar-header">
                         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                            <span class="fa fa-bars fa-lg"></span>
                             <span class="fa fa-bars fa-lg"></span>
                         </button>
                         <a class="navbar-brand" href="index.ejs">
@@ -366,7 +369,7 @@
                                                 <input type="password" class="form-control" id="lg_password" name="lg_password" placeholder="password" ng-model="pass">
                                             </div>
                                         </div>
-                                        <button type="submit" class="login-button" ng-click="login()"><i class="fa fa-chevron-right"></i></button>
+                                        <button  class="login-button" ng-click="login()"><i class="fa fa-chevron-right"></i></button>
                                     </div>
                                     <div class="etc-login-form">
                                         <p>new user? <a ng-click = "loglayer= !loglayer " href="">create new account</a></p>
@@ -392,7 +395,7 @@
                                                 <input type="password" class="form-control" id="reg_password" name="reg_password" placeholder="password" ng-model="pass">
                                             </div>
                                         </div>
-                                        <button type="submit" class="login-button"><i class="fa fa-chevron-right" ng-click="register()"></i></button>
+                                        <button  class="login-button" ng-click="register()"><i class="fa fa-chevron-right" ></i></button>
                                     </div>
                                     <div class="etc-login-form">
                                         <p>already have an account? <a ng-click ="loglayer= !loglayer " href="">login here</a></p>
