@@ -13,6 +13,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <link rel="shortcut icon" href="favicon.png">
 
+
     <link rel="stylesheet" href="css/bootstrap.css">
     
     <link rel="stylesheet" href="css/animate.css">
@@ -24,14 +25,99 @@
 
 
     <script type="text/javascript" src="js/modernizr.custom.32033.js"></script>
+    <script
+            src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular.js">
+    </script>
 
+    <script src="js/controller/control.js"></script>
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+  <!--*****-->
+    <style>
+        .loginreg {
+            position: absolute;
+            top: calc(50% - 75px);
+            left: calc(50% - 140px);
+            height: 150px;
+            width: 350px;
+            padding: 10px;
+            z-index: 2;
+        }
+        .loginreg input[type=text]{
+            width: 250px;
+            height: 30px;
+            background: transparent;
+            border: 1px solid rgba(0,0,0,0.6);
+            border-radius: 2px;
+            color: #000;
+            font-family: 'Exo', sans-serif;
+            font-size: 16px;
+            font-weight: 400;
+            padding: 2 px;
+        }
+
+        .loginreg input[type=password]{
+            width: 250px;
+            height: 30px;
+            background: transparent;
+            border: 1px solid rgba(0,0,0,0.6);
+            border-radius: 2px;
+            color: #000;
+            font-family: 'Exo', sans-serif;
+            font-size: 16px;
+            font-weight: 400;
+            padding: 4px;
+            margin-top: 10px;
+        }
+
+        .loginreg input[type=button]{
+            width: 250px;
+            height: 35px;
+            background: #000;
+            border: 1px solid #fff;
+            cursor: pointer;
+            border-radius: 2px;
+            color: #fff;
+            font-family: 'Exo', sans-serif;
+            font-size: 16px;
+            font-weight: 400;
+            padding: 4px;
+            margin-top: 10px;
+        }
+        .loginreg input[type=button]:hover{
+            opacity: 0.8;
+        }
+
+        .loginreg input[type=button]:active{
+            opacity: 0.6;
+        }
+
+        .loginreg input[type=text]:focus{
+            outline: none;
+            border: 1px solid rgba(255,255,255,0.9);
+        }
+
+        .loginreg input[type=password]:focus{
+            outline: none;
+            border: 1px solid rgba(255,255,255,0.9);
+        }
+
+        .loginreg input[type=button]:focus{
+            outline: none;
+        }
+        .show{
+            display:block;
+        }
+        .hide{
+            display:none;
+        }
+    </style>
+    <!--*****-->
 </head>
 
-<body>
+<body ng-app="myApp" ng-controller="myController">
 
     <div class="pre-loader">
         <div class="load-con">
@@ -64,7 +150,7 @@
                         <ul class="nav navbar-nav navbar-right">
                             <li><a href="#features">features</a>
                             </li>
-                            <li><a href="#demo">demo</a>
+                            <li><a href="#login">login</a>
                             </li>
                             <li><a class="getApp" href="#getApp">get app</a>
                             </li>
@@ -324,18 +410,33 @@
             </div>
         </section>
 
-        <section id="demo">
+        <section id="login">
             <div class="container">
                 <div class="section-heading scrollpoint sp-effect3">
-                    <h1>Demo</h1>
+                    <h1>Login</h1>
                     <div class="divider"></div>
                     <p>Take a closer look in more detail</p>
                 </div>
                 <div class="row">
                     <div class="col-md-8 col-md-offset-2 scrollpoint sp-effect2">
-                        <div class="video-container" >
-                            <iframe src="http://player.vimeo.com/video/70984663"></iframe>
-                        </div>
+<!--*****-->
+                            <br>
+                                <div class="loginreg">
+                                    <input type="text"  placeholder="username" name="user" ><br>
+                                    <input type="password" placeholder="password" name="password"><br>
+                                    <input ng-show="loglayer" type="button" value="Login" style="margin-bottom: 2px" >
+                                    <input ng-show="!loglayer" type="button" value="Signup" style="margin-bottom: 2px"><br>
+                                    <l ng-show="loglayer" style="padding-left: 5px">Don't have an account yet?</l>
+                                    <button ng-click="loglayer = !loglayer" ng-init="count=0" ng-show="loglayer">
+                                        Register
+                                    </button>
+                                    <button ng-click="loglayer = !loglayer" ng-init="count=0" ng-show="!loglayer">
+                                        Login
+                                    </button>
+
+                                </div>
+<!--***-->
+
                     </div>
                 </div>
             </div>
