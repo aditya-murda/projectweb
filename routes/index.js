@@ -19,6 +19,11 @@ router.get('/home',function(req,res,next){
 });
 
 router.all("/login", function (req, res, next) {
+    console.log("login: " + req.session.login);
+    if(req.session.login) {
+        res.json({status: true});
+        return; // user sudah pernah login
+    }
     var username = req.query["uname"];
     var password = req.query["pass"];
     console.log("username: " + username);
@@ -29,23 +34,26 @@ router.all("/login", function (req, res, next) {
     pool.getConnection(function (err, connection) {
         connection.query(query, function (err, rows) {
             console.log(JSON.stringify(rows));
-            if(rows.length==1) {
-                res.json({status: true});
+            if(rows.length===1) {
                 req.session.login = true;
                 req.session.iduser = rows[0].iduser;
             }
             else {
                 res.json({status:false});
             }
+            res.json(req.session);
+            console.log("login: " + req.session);
+            // res.json("login: " + req.session);
         });
         connection.release();
     });
 });
 
 router.get("/logout", function (req, res, next) {
-    var username = req.param("username");
-    var password = req.param("password");
-    delete req.session;
+    console.log("login: " + req.session);
+    res.json({status:true});
+    req.session.destroy();
+    console.log("login after destroy: " + req.session);
 });
 
 router.all("/changepass", function (req, res, next) {
@@ -58,9 +66,9 @@ router.all("/changepass", function (req, res, next) {
         connection.query(query, function (error, rows) {
             if(err) {
                 console.error("err db: ", err);
-                res.json({status:0});
+                res.json({status: false});
             }
-            res.json({status:1});
+            res.json({status: true});
         });
         connection.release();
     });
@@ -94,9 +102,8 @@ router.all("/register", function (req, res, next) {
     });
 });
 
-router.all("/sendpost", function (req, res, next) {
+router.all("/posting", function (req, res, next) {
     var post = req.param("post");
-    var iduser = req.param("iduser");
     var location = req.param("location");
     var query = "INSERT INTO posts (iduser, post, location) VALUES ('"
         + iduser + "', '" + post + "', '" + location + "'";
@@ -105,15 +112,20 @@ router.all("/sendpost", function (req, res, next) {
         connection.query(query, function (err, rows) {
             if(err) {
                 console.error("err db: ", err);
-                res.json({status:0});
+                res.json({status: false});
             }
-            res.json({status:1})
+            res.json({status: true})
         });
         connection.release();
     });
 });
 
-router.all("/getposts", function (req, res, next) {
+router.all("/getall", function (req, res, next) {
+    if(!req.session.login) {
+        res.send("not logged in");
+        return;
+    }
+    console.log("iduser: " + req.session.iduser);
     pool.getConnection(function (err, connection) {
         connection.query("SELECT post FROM posts", function (err, rows) {
             if(err) console.error("err db: ", err);
@@ -123,7 +135,7 @@ router.all("/getposts", function (req, res, next) {
     });
 });
 
-router.get("/getnearbyposts", function (req, res, next) {
+router.get("/getnearby", function (req, res, next) {
     var location = req.param("location");
     pool.getConnection(function (err, connection) {
         connection.query("SELECT post FROM posts where location='"

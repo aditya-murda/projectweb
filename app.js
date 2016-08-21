@@ -4,17 +4,12 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var session = require('express-session');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
-var cookieParser = require("cookie-parser");
-var cookieSession = require("cookie-session");
-
 var app = express();
-
-app.use(cookieParser());
-app.use(cookieSession({secret: 'MYKEY'}));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -33,9 +28,15 @@ var allowCORS = function (req, res, next) {
   res.header("Access-Control-Allow-Headers",
       "Origin, X-Requested-With, Content-Type, Accept");
   next();
-}
-
+};
 app.use(allowCORS);
+app.use(session({
+    key: 'sid',
+    secret: 'huehuehue',
+    cookie: {
+        maxAge: 1000*60*60
+    }
+}));
 app.use('/', routes);
 
 // catch 404 and forward to error handler
@@ -46,7 +47,6 @@ app.use(function(req, res, next) {
 });
 
 // error handlers
-
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
