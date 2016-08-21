@@ -6,65 +6,75 @@ var pool = mysql.createPool({
     host: 'localhost',
     user: 'root',
     password: 'root',
-    database: 'test'
+    database: 'undercover'
 });
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index',{title: "sesuatu"});
+    res.render('index', { title: 'Undercover' });
 });
 
-router.get('/home',function(req,res,next){
-    res.render('home',{title: "sample homepage"});
-});
-
-router.all("/login", function (req, res, next) {
-    console.log("login: " + req.session.login);
-    if(req.session.login) {
-        res.json({status: true});
-        return; // user sudah pernah login
+router.get('/home', function(req, res, next) {
+    if(!req.session.login) {
+        console.log("user not log in");
+        res.redirect("localhost:3000/");
     }
-    var username = req.query["uname"];
-    var password = req.query["pass"];
-    console.log("username: " + username);
-    console.log("password: " + password);
-    var query = "SELECT iduser FROM users WHERE username='"
-        + username + "' AND password='"
+    res.render('home-all', { title: 'Undercover - Home' });
+});
+
+router.get('/nearby', function(req, res, next) {
+    if(!req.session.login) {
+        console.log("user not log in");
+        res.redirect("localhost:3000/");
+    }
+    res.render('home-nearby', { title: 'Undercover - Home' });
+});
+
+router.get('/setting', function(req, res, next) {
+    if(!req.session.login) {
+        console.log("user not log in");
+        res.redirect("localhost:3000/");
+    }
+    res.render('setting', { title: 'Undercover - Setting' });
+});
+
+/* REST API */
+router.all("/login", function (req, res, next) {
+    var username = req.param("uname");
+    var password = req.param("pass");
+    var query = "SELECT * FROM user WHERE uname='"
+        + username + "' AND pass='"
         + password + "';";
     pool.getConnection(function (err, connection) {
         connection.query(query, function (err, rows) {
             console.log(JSON.stringify(rows));
-            if(rows.length===1) {
+            if(rows.length == 1) {
+                res.json({status: true});
                 req.session.login = true;
-                req.session.iduser = rows[0].iduser;
+                req.session.userid = rows[0].id_user;
+            } else {
+                res.json({status: false});
             }
-            else {
-                res.json({status:false});
-            }
-            res.json(req.session);
-            console.log("login: " + req.session);
-            // res.json("login: " + req.session);
         });
         connection.release();
     });
 });
 
-router.get("/logout", function (req, res, next) {
-    console.log("login: " + req.session);
-    res.json({status:true});
+router.all("/logout", function (req, res, next) {
     req.session.destroy();
-    console.log("login after destroy: " + req.session);
 });
 
 router.all("/changepass", function (req, res, next) {
     var username = req.param("uname");
-    var password = req.param("new_pass");
-    var query = "UPDATE user SET password='"
-        + password + "' WHERE username='"
-        + username + "';";
+    var oldpw = req.param("old_pass");
+    var newpw = req.param("new_pass");
+    var query = "UPDATE user SET pass='"
+        + newpw + "' WHERE uname='"
+        + username + "' AND pass='"
+        + oldpw + "';";
     pool.getConnection(function (err, connection) {
         connection.query(query, function (error, rows) {
-            if(err) {
+            if (err) {
                 console.error("err db: ", err);
                 res.json({status: false});
             }
@@ -77,37 +87,53 @@ router.all("/changepass", function (req, res, next) {
 router.all("/register", function (req, res, next) {
     var username = req.param("uname");
     var password = req.param("pass");
-    var query = "INSERT INTO users (username, password) VALUES ('" + username
+    var query = "INSERT INTO user (uname, pass) VALUES ('" + username
         + "', '" + password +"');";
     console.log(query);
     pool.getConnection(function (err, connection) {
         connection.query(query, function (err, rows) {
             if(err) {
-                res.json({status:false});
+                res.json({status: false});
                 console.error("err db: ", err);
             }
-            res.json({status:true});
+            res.json({status: true});
         });
-        query = "SELECT iduser FROM users WHERE username='" +
-                username + "'";
+        query = "SELECT * FROM user WHERE uname='" +
+            username + "'";
         connection.query(query, function (error, rows) {
             if(error) {
-                res.json({status:false});
+                res.json({status: false});
                 console.error("err db: ", err);
             }
-            req.session.login = true;
-            req.session.iduser = rows[0];
         });
         connection.release();
     });
 });
 
 router.all("/posting", function (req, res, next) {
-    var post = req.param("post");
+    var userid = req.session.userid;
+    var post = req.param("isi_post");
     var location = req.param("location");
-    var query = "INSERT INTO posts (iduser, post, location) VALUES ('"
-        + iduser + "', '" + post + "', '" + location + "'";
-    // TODO: send user post
+    var query = "INSERT INTO post (id_user, isi_post, location) VALUES ('"
+        userid + "','" + post + "', '" + location + "')";
+    pool.getConnection(function (err, connection) {
+        connection.query(query, function (err, rows) {
+            if(err) {
+                console.error("err db: ", err);
+                res.json({status: false});
+            }
+            res.json({status: true})
+        });
+        connection.release();
+    });
+});
+
+router.all("/postcomment", function (req, res, next) {
+    var userid = req.session.userid;
+    var post = req.param("id_post");
+    var comment = req.param("isi_comment");
+    var query = "INSERT INTO comment (id_post, id_user, isi_comment) VALUES ('"
+        + userid + "', '" + post + "', '" + comment + "')";
     pool.getConnection(function (err, connection) {
         connection.query(query, function (err, rows) {
             if(err) {
@@ -121,13 +147,9 @@ router.all("/posting", function (req, res, next) {
 });
 
 router.all("/getall", function (req, res, next) {
-    if(!req.session.login) {
-        res.send("not logged in");
-        return;
-    }
-    console.log("iduser: " + req.session.iduser);
     pool.getConnection(function (err, connection) {
-        connection.query("SELECT post FROM posts", function (err, rows) {
+        var query = "SELECT id_post, isi_post FROM post;"
+        connection.query(query, function (err, rows) {
             if(err) console.error("err db: ", err);
             res.json(rows);
         });
@@ -138,8 +160,9 @@ router.all("/getall", function (req, res, next) {
 router.get("/getnearby", function (req, res, next) {
     var location = req.param("location");
     pool.getConnection(function (err, connection) {
-        connection.query("SELECT post FROM posts where location='"
-                + location + "';" , function (error, rows) {
+        var query = "SELECT id_post, isi_post FROM post where location='"
+            + location + "';";
+        connection.query(query , function (error, rows) {
             if(err) console.error("err db: ", err);
             res.json(rows);
         });
